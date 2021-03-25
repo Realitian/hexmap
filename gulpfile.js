@@ -1,6 +1,7 @@
 var gulp = require('gulp');
 var fs = require('fs');
-var $ = require('gulp-load-plugins')();
+var gulpLoadPlugins = require('gulp-load-plugins');
+var plugins = gulpLoadPlugins();
 var del = require('del');
 var runSequence = require('run-sequence');
 var browserSync = require('browser-sync').create();
@@ -56,52 +57,52 @@ gulp.task('scripts', ['all', 'hex', 'sqr']);
 
 gulp.task('all', function() {
 	return gulp.src(glob.scripts)
-		.pipe($.plumber({errorHandler: handleErrors}))
-		.pipe($.eslint({ fix: true }))
-		.pipe($.eslint.formatEach())
-		.pipe($.eslint.failOnError())
-		.pipe($.sourcemaps.init())
-		.pipe($.concat('von-grid.min.js'))
-		.pipe($.uglify())
-		.pipe($.sourcemaps.write('.'))
+		.pipe(plugins.plumber({errorHandler: handleErrors}))
+		.pipe(plugins.eslint({ fix: true }))
+		.pipe(plugins.eslint.formatEach())
+		.pipe(plugins.eslint.failOnError())
+		.pipe(plugins.sourcemaps.init())
+		.pipe(plugins.concat('von-grid.min.js'))
+		.pipe(plugins.uglify())
+		.pipe(plugins.sourcemaps.write('.'))
 		.pipe(gulp.dest(dist))
 		.pipe(browserSync.stream());
 });
 
 gulp.task('hex', function() {
 	return gulp.src(glob.hexScripts)
-		.pipe($.plumber({errorHandler: handleErrors}))
-		.pipe($.sourcemaps.init())
-		.pipe($.concat('hex-grid.min.js'))
-		.pipe($.uglify())
-		.pipe($.sourcemaps.write('.'))
+		.pipe(plugins.plumber({errorHandler: handleErrors}))
+		.pipe(plugins.sourcemaps.init())
+		.pipe(plugins.concat('hex-grid.min.js'))
+		.pipe(plugins.uglify())
+		.pipe(plugins.sourcemaps.write('.'))
 		.pipe(gulp.dest(dist))
 		.pipe(browserSync.stream());
 });
 
 gulp.task('sqr', function() {
 	return gulp.src(glob.sqrScripts)
-		.pipe($.plumber({errorHandler: handleErrors}))
-		.pipe($.sourcemaps.init())
-		.pipe($.concat('sqr-grid.min.js'))
-		.pipe($.uglify())
-		.pipe($.sourcemaps.write('.'))
+		.pipe(plugins.plumber({errorHandler: handleErrors}))
+		.pipe(plugins.sourcemaps.init())
+		.pipe(plugins.concat('sqr-grid.min.js'))
+		.pipe(plugins.uglify())
+		.pipe(plugins.sourcemaps.write('.'))
 		.pipe(gulp.dest(dist))
 		.pipe(browserSync.stream());
 });
 
 gulp.task('scripts-editor', function() {
 	return gulp.src(glob.editorScripts)
-		.pipe($.plumber({errorHandler: handleErrors}))
-		.pipe($.sortAmd())
-		//.pipe($.eslint({ fix: true }))
-		//.pipe($.eslint.formatEach())
-		//.pipe($.eslint.failOnError())
-		.pipe($.addSrc.prepend('./editor/lib/define.min.js'))
-		.pipe($.sourcemaps.init())
-		.pipe($.concat('app.js'))
-		//.pipe($.uglify())
-		.pipe($.sourcemaps.write('.'))
+		.pipe(plugins.plumber({errorHandler: handleErrors}))
+		.pipe(plugins.sortAmd())
+		//.pipe(plugins.eslint({ fix: true }))
+		//.pipe(plugins.eslint.formatEach())
+		//.pipe(plugins.eslint.failOnError())
+		.pipe(plugins.addSrc.prepend('./editor/lib/define.min.js'))
+		.pipe(plugins.sourcemaps.init())
+		.pipe(plugins.concat('app.js'))
+		//.pipe(plugins.uglify())
+		.pipe(plugins.sourcemaps.write('.'))
 		.pipe(gulp.dest('editor'))
 		.pipe(browserSync.stream());
 });
@@ -112,14 +113,14 @@ gulp.task('scripts-editor', function() {
 /*
 gulp.task('styles', function() {
 	return gulp.src(glob.styles)
-		.pipe($.plumber({errorHandler: handleErrors}))
-		.pipe($.sourcemaps.init())
-		.pipe($.stylus({
+		.pipe(plugins.plumber({errorHandler: handleErrors}))
+		.pipe(plugins.sourcemaps.init())
+		.pipe(plugins.stylus({
 			compress: true
 		}))
-		.pipe($.autoprefixer())
-		.pipe($.concat('styles.css'))
-		.pipe($.sourcemaps.write('.'))
+		.pipe(plugins.autoprefixer())
+		.pipe(plugins.concat('styles.css'))
+		.pipe(plugins.sourcemaps.write('.'))
 		.pipe(gulp.dest(dist))
 });
 */
@@ -169,7 +170,7 @@ gulp.task('serve-examples', function() {
 function handleErrors() {
 	var args = Array.prototype.slice.call(arguments);
 	// Send error to notification center with gulp-notify
-	$.notify.onError({
+	plugins.notify.onError({
 		title: 'Build error',
 		message: '<%= error%>',
 		showStack: true
