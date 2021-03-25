@@ -1,8 +1,11 @@
-import vg from "../vg";
-import * as THREE from "three";
-import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
+/*
+	Sets up and manages a THREEjs container, camera, and light, making it easy to get going.
+	Also provides camera control.
 
-function Scene(sceneConfig, controlConfig) {
+	Assumes full screen.
+ */
+// 'utils/Tools'
+vg.Scene = function(sceneConfig, controlConfig) {
 	var sceneSettings = {
 		element: document.body,
 		alpha: true,
@@ -62,7 +65,7 @@ function Scene(sceneConfig, controlConfig) {
 
 	this.contolled = !!controlConfig;
 	if (this.contolled) {
-		this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+		this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
 		this.controls.minDistance = controlSettings.minDistance;
 		this.controls.maxDistance = controlSettings.maxDistance;
 		this.controls.zoomSpeed = controlSettings.zoomSpeed;
@@ -77,8 +80,8 @@ function Scene(sceneConfig, controlConfig) {
 		this.width = window.innerWidth;
 		this.height = window.innerHeight;
 		if (this.camera.type === 'OrthographicCamera') {
-			const width = this.width / this.orthoZoom;
-			const height = this.height / this.orthoZoom;
+			var width = this.width / this.orthoZoom;
+			var height = this.height / this.orthoZoom;
 			this.camera.left = width / -2;
 			this.camera.right = width / 2;
 			this.camera.top = height / 2;
@@ -92,49 +95,48 @@ function Scene(sceneConfig, controlConfig) {
 	}.bind(this), false);
 
 	this.attachTo(sceneSettings.element);
-}
-
-Scene.prototype = {
-  constructor: Scene,
-
-  attachTo: function(element) {
-    element.style.width = this.width + 'px';
-    element.style.height = this.height + 'px';
-    this.renderer.setPixelRatio(window.devicePixelRatio);
-    this.renderer.setSize(this.width, this.height);
-    element.appendChild(this.renderer.domElement);
-  },
-
-  add: function(mesh) {
-    this.container.add(mesh);
-  },
-
-  remove: function(mesh) {
-    this.container.remove(mesh);
-  },
-
-  render: function() {
-    if (this.contolled) this.controls.update();
-    this.renderer.render(this.container, this.camera);
-  },
-
-  updateOrthoZoom: function() {
-    if (this.orthoZoom <= 0) {
-      this.orthoZoom = 0;
-      return;
-    }
-    var width = this.width / this.orthoZoom;
-    var height = this.height / this.orthoZoom;
-    this.camera.left = width / -2;
-    this.camera.right = width / 2;
-    this.camera.top = height / 2;
-    this.camera.bottom = height / -2;
-    this.camera.updateProjectionMatrix();
-  },
-
-  focusOn: function(obj) {
-    this.camera.lookAt(obj.position);
-  }
 };
 
-export default Scene;
+vg.Scene.prototype = {
+
+	attachTo: function(element) {
+		element.style.width = this.width + 'px';
+		element.style.height = this.height + 'px';
+		this.renderer.setPixelRatio(window.devicePixelRatio);
+		this.renderer.setSize(this.width, this.height);
+		element.appendChild(this.renderer.domElement);
+	},
+
+	add: function(mesh) {
+		this.container.add(mesh);
+	},
+
+	remove: function(mesh) {
+		this.container.remove(mesh);
+	},
+
+	render: function() {
+		if (this.contolled) this.controls.update();
+		this.renderer.render(this.container, this.camera);
+	},
+
+	updateOrthoZoom: function() {
+		if (this.orthoZoom <= 0) {
+			this.orthoZoom = 0;
+			return;
+		}
+		var width = this.width / this.orthoZoom;
+		var height = this.height / this.orthoZoom;
+		this.camera.left = width / -2;
+		this.camera.right = width / 2;
+		this.camera.top = height / 2;
+		this.camera.bottom = height / -2;
+		this.camera.updateProjectionMatrix();
+	},
+
+	focusOn: function(obj) {
+		this.camera.lookAt(obj.position);
+	}
+};
+
+vg.Scene.prototype.constructor = vg.Scene;

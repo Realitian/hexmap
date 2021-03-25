@@ -1,7 +1,9 @@
-import vg from "../vg";
-import * as THREE from "three";
+/*
+	Example tile class that constructs its geometry for rendering and holds some gameplay properties.
 
-function Tile(config) {
+	@author Corey Birnbaum https://github.com/vonWolfehaus/
+*/
+vg.Tile = function(config) {
 	config = config || {};
 	var settings = {
 		cell: null, // required vg.Cell
@@ -23,37 +25,40 @@ function Tile(config) {
 	this.geometry = settings.geometry;
 	this.material = settings.material;
 	if (!this.material) {
-        switch (this.cell.tile.cell.userData.type) {
-            case "Tundra":
-                texture = tundra;
-                break;
-            case "Ice":
-                texture = ice;
-                break;
-            case "Sea":
-                texture = sea;
-                break;
-            case "Sand":
-                texture = sand;
-                break;
-            case "Grassland":
-                texture = grassland;
-                break;
-            case "Hills":
-                texture = hills;
-                break;
-            case "Mountain":
-                texture = mountain;
-                break;
-        }
+		switch (this.cell.tile.cell.userData.type) {
+			case "Tundra":
+				texture = tundra;
+				break;
+			case "Ice":
+				texture = ice;
+				break;
+			case "Sea":
+				texture = sea;
+				break;
+			case "Sand":
+				texture = sand;
+				break;
+			case "Grassland":
+				texture = grassland;
+				break;
+			case "Hills":
+				texture = hills;
+				break;
+			case "Mountain":
+				texture = mountain;
+				break;
+		}
 
-        this.material = new THREE.MeshPhongMaterial({map: texture });
-            texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+		this.material || (this.material = new THREE.MeshPhongMaterial({map: texture })),
+			texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+		this.material = new THREE.MeshPhongMaterial({
+			color: vg.Tools.randomizeRGB('30, 30, 30', 13)
+		});
 	}
 
 	this.objectType = vg.TILE;
 	this.entity = null;
-	this.hexData = {};
+	this.userData = {};
 
 	this.selected = false;
 	this.highlight = '0x0084cc';
@@ -75,50 +80,49 @@ function Tile(config) {
 	else {
 		this._emissive = null;
 	}
-}
-
-Tile.prototype = {
-  constructor: Tile,
-  select: function() {
-    if (this.material.emissive) {
-      this.material.emissive.setHex(this.highlight);
-    }
-    this.selected = true;
-    return this;
-  },
-
-  deselect: function() {
-    if (this._emissive !== null && this.material.emissive) {
-      this.material.emissive.setHex(this._emissive);
-    }
-    this.selected = false;
-    return this;
-  },
-
-  toggle: function() {
-    if (this.selected) {
-      this.deselect();
-    }
-    else {
-      this.select();
-    }
-    return this;
-  },
-
-  dispose: function() {
-    if (this.cell && this.cell.tile) this.cell.tile = null;
-    this.cell = null;
-    this.position = null;
-    this.rotation = null;
-    if (this.mesh.parent) this.mesh.parent.remove(this.mesh);
-    this.mesh.userData.structure = null;
-    this.mesh = null;
-    this.material = null;
-    this.userData = null;
-    this.entity = null;
-    this.geometry = null;
-    this._emissive = null;
-  }
 };
 
-export default Tile;
+vg.Tile.prototype = {
+	select: function() {
+		if (this.material.emissive) {
+			this.material.emissive.setHex(this.highlight);
+		}
+		this.selected = true;
+		return this;
+	},
+
+	deselect: function() {
+		if (this._emissive !== null && this.material.emissive) {
+			this.material.emissive.setHex(this._emissive);
+		}
+		this.selected = false;
+		return this;
+	},
+
+	toggle: function() {
+		if (this.selected) {
+			this.deselect();
+		}
+		else {
+			this.select();
+		}
+		return this;
+	},
+
+	dispose: function() {
+		if (this.cell && this.cell.tile) this.cell.tile = null;
+		this.cell = null;
+		this.position = null;
+		this.rotation = null;
+		if (this.mesh.parent) this.mesh.parent.remove(this.mesh);
+		this.mesh.userData.structure = null;
+		this.mesh = null;
+		this.material = null;
+		this.userData = null;
+		this.entity = null;
+		this.geometry = null;
+		this._emissive = null;
+	}
+};
+
+vg.Tile.prototype.constructor = vg.Tile;

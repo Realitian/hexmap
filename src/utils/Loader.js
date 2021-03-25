@@ -1,6 +1,4 @@
-import * as THREE from "three";
-
-const Loader = {
+vg.Loader = {
 	manager: null,
 	imageLoader: null,
 	crossOrigin: false,
@@ -18,6 +16,7 @@ const Loader = {
 
 		this.imageLoader = new THREE.ImageLoader(this.manager);
 		this.imageLoader.crossOrigin = crossOrigin;
+
 		var loader = new THREE.TextureLoader();
 		var tundra = loader.load('./image/tundra.jpg');
 		var ice = loader.load('./image/ice.jpg');
@@ -44,5 +43,3 @@ const Loader = {
 		return texture;
 	}
 };
-
-export default Loader;

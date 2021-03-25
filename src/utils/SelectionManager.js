@@ -1,5 +1,4 @@
-import vg from "../vg";
-
+// 'utils/Tools', 'lib/LinkedList', 'utils/MouseCaster', 'lib/Signal'
 vg.SelectionManager = function(mouse) {
 	this.mouse = mouse;
 

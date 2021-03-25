@@ -1,16 +1,4 @@
-import Scene from "./utils/Scene";
-import Tools from "./utils/Tools";
-import HexGrid from "./grids/HexGrid";
-import Cell from "./grids/Cell";
-import LinkedList from "./lib/LinkedList";
-import Board from "./Board";
-import AStarFinder from "./pathing/AStarFinder";
-import Loader from "./utils/Loader";
-import MouseCaster from "./utils/MouseCaster";
-import { Signal } from "./lib/Signal";
-import Tile from "./grids/Tile";
-
-const vg = { // eslint-disable-line
+var vg = { // eslint-disable-line
 	VERSION: '0.1.1',
 
 	PI: Math.PI,
@@ -26,19 +14,5 @@ const vg = { // eslint-disable-line
 
 	HEX: 'hex',
 	SQR: 'square',
-	ABS: 'abstract',
-
-  Tools,
-  Scene,
-  HexGrid,
-  Cell,
-  LinkedList,
-  Board,
-  AStarFinder,
-  Loader,
-  MouseCaster,
-  Signal,
-  Tile,
+	ABS: 'abstract'
 };
-
-export default vg;
