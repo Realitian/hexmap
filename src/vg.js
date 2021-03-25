@@ -16,3 +16,12 @@ var vg = { // eslint-disable-line
 	SQR: 'square',
 	ABS: 'abstract'
 };
+
+var loader = new THREE.TextureLoader();
+var tundra = loader.load('./image/tundra.jpg');
+var ice = loader.load('./image/ice.jpg');
+var sea = loader.load('./image/water.jpg');
+var sand = loader.load('./image/sand.jpg');
+var grassland = loader.load('./image/grassland.jpg');
+var hills = loader.load('./image/hills.jpg');
+var mountain = loader.load('./image/mountains.jpg');

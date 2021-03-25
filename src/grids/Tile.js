@@ -49,11 +49,8 @@ vg.Tile = function(config) {
 				break;
 		}
 
-		this.material || (this.material = new THREE.MeshPhongMaterial({map: texture })),
+		this.material = new THREE.MeshPhongMaterial({map: texture });
 			texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-		this.material = new THREE.MeshPhongMaterial({
-			color: vg.Tools.randomizeRGB('30, 30, 30', 13)
-		});
 	}
 
 	this.objectType = vg.TILE;
