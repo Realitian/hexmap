@@ -1,3 +1,9 @@
+To start server:
+var express = require('express')
+var path = require('path')
+var serveStatic = require('serve-static')
+
+
 # 3D hex tile system
 
 ![screenshot](hex-grid.jpg)
