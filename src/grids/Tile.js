@@ -25,6 +25,32 @@ vg.Tile = function(config) {
 	this.geometry = settings.geometry;
 	this.material = settings.material;
 	if (!this.material) {
+		switch (this.cell.tile.cell.userData.type) {
+			case "Tundra":
+				texture = tundra;
+				break;
+			case "Ice":
+				texture = ice;
+				break;
+			case "Sea":
+				texture = sea;
+				break;
+			case "Sand":
+				texture = sand;
+				break;
+			case "Grassland":
+				texture = grassland;
+				break;
+			case "Hills":
+				texture = hills;
+				break;
+			case "Mountain":
+				texture = mountain;
+				break;
+		}
+
+		this.material || (this.material = new THREE.MeshPhongMaterial({map: texture })),
+			texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
 		this.material = new THREE.MeshPhongMaterial({
 			color: vg.Tools.randomizeRGB('30, 30, 30', 13)
 		});
