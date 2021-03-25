@@ -31,7 +31,7 @@
 	window.addEventListener('load', function(evt) {
 		var scene = new vg.Scene({
 			element: document.getElementById('view'),
-			cameraPosition: {x:0, y:0, z:0}
+			cameraPosition: {x:207.5, y:250, z:360}
 		}, true);
 
 		// this constructs the cells in grid coordinate space
@@ -43,18 +43,17 @@
 			// this will generate extruded hexagonal tiles of the grid that was loaded
 			board.generateTilemap();
 		}, this);
-		// Test doesn't work REEE
 		let test = {}
-		test.position = {x: 32, y: 32, z: 0}
-		console.log(test)
+		test.position = new THREE.Vector3(250,0,-300);
 		scene.add(board.group);
-		scene.focusOn(test);
+		scene.focusOn(board.group);
 		console.log(board.group);
 
 		mouse.signal.add(function(evt, tile) {
 			if (evt === vg.MouseCaster.CLICK) {
 				tile.toggle();
 				console.log(tile.cell, tile.position);
+				console.log(tile.cell.userData);
 			}
 		}, this);
 
