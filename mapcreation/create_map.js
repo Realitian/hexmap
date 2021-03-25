@@ -55,7 +55,6 @@ async function evenr_to_cube(col,row){
     var z = row-10;
     var y = -x-z+10;
     var colrow = {"col": col, "row": row};
-    console.log(await getElevation(1.1,col,row));
     cells.push({
         "q":x,
         "r":y,
@@ -67,16 +66,21 @@ async function evenr_to_cube(col,row){
   }
  async function getElevation(version,col,row) {
     let elev;
-        await db.all(`SELECT elevation
-                FROM tile
-                WHERE version = ?
-                  AND col_tile = ? AND row_tile = ?`, [version, col, row], async (err, rows) => {
-            if (err) {
-                throw err;
-            }
-            await rows.forEach((row) => {
-                elev = row.elevation;
-                return elev;
-            });
-        });
+     const res = await new Promise((resolve, reject) => {
+         db.all(`SELECT elevation
+                       FROM tile
+                       WHERE version = ?
+                         AND col_tile = ?
+                         AND row_tile = ?`, [version, col, row], async (err, rows) => {
+             if (err) {
+                 throw err;
+             }
+             rows.forEach((row) => {
+                 resolve(row.elevation);
+             });
+         });
+     });
+
+     console.log(res);
+     return res;
   }
