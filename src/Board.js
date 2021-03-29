@@ -1,27 +1,5 @@
-/*
-	Interface to the grid. Holds data about the visual representation of the cells (tiles).
-
-	@author Corey Birnbaum https://github.com/vonWolfehaus/
- */
-vg.Board = function(grid, finderConfig) {
-	if (!grid) throw new Error('You must pass in a grid system for the board to use.');
-
-	this.tiles = [];
-	this.tileGroup = null; // only for tiles
-
-	this.group = new THREE.Object3D(); // can hold all entities, also holds tileGroup, never trashed
-
-	this.grid = null;
-	this.overlay = null;
-	this.finder = new vg.AStarFinder(finderConfig);
-	// need to keep a resource cache around, so this Loader does that, use it instead of THREE.ImageUtils
-	vg.Loader.init();
-
-	this.setGrid(grid);
-};
-
-vg.Board.prototype = {
-	setEntityOnTile: function(entity, tile) {
+class Board {
+    setEntityOnTile(entity, tile) {
 		// snap an entity's position to a tile; merely copies position
 		var pos = this.grid.cellToPixel(tile.cell);
 		entity.position.copy(pos);
@@ -34,9 +12,9 @@ vg.Board.prototype = {
 		// set new situation
 		entity.tile = tile;
 		tile.entity = entity;
-	},
+	}
 
-	addTile: function(tile) {
+	addTile(tile) {
 		var i = this.tiles.indexOf(tile);
 		if (i === -1) this.tiles.push(tile);
 		else return;
@@ -48,9 +26,9 @@ vg.Board.prototype = {
 		this.grid.add(tile.cell);
 
 		tile.cell.tile = tile;
-	},
+	}
 
-	removeTile: function(tile) {
+	removeTile(tile) {
 		if (!tile) return; // was already removed somewhere
 		var i = this.tiles.indexOf(tile);
 		this.grid.remove(tile.cell);
@@ -59,27 +37,27 @@ vg.Board.prototype = {
 		// this.tileGroup.remove(tile.mesh);
 
 		tile.dispose();
-	},
+	}
 
-	removeAllTiles: function() {
+	removeAllTiles() {
 		if (!this.tileGroup) return;
 		var tiles = this.tileGroup.children;
 		for (var i = 0; i < tiles.length; i++) {
 			this.tileGroup.remove(tiles[i]);
 		}
-	},
+	}
 
-	getTileAtCell: function(cell) {
+	getTileAtCell(cell) {
 		var h = this.grid.cellToHash(cell);
 		return cell.tile || (typeof this.grid.cells[h] !== 'undefined' ? this.grid.cells[h].tile : null);
-	},
+	}
 
-	snapToGrid: function(pos) {
+	snapToGrid(pos) {
 		var cell = this.grid.pixelToCell(pos);
 		pos.copy(this.grid.cellToPixel(cell));
-	},
+	}
 
-	snapTileToGrid: function(tile) {
+	snapTileToGrid(tile) {
 		if (tile.cell) {
 			tile.position.copy(this.grid.cellToPixel(tile.cell));
 		}
@@ -88,18 +66,18 @@ vg.Board.prototype = {
 			tile.position.copy(this.grid.cellToPixel(cell));
 		}
 		return tile;
-	},
+	}
 
-	getRandomTile: function() {
+	getRandomTile() {
 		var i = vg.Tools.randomInt(0, this.tiles.length-1);
 		return this.tiles[i];
-	},
+	}
 
-	findPath: function(startTile, endTile, heuristic) {
+	findPath(startTile, endTile, heuristic) {
 		return this.finder.findPath(startTile.cell, endTile.cell, heuristic, this.grid);
-	},
+	}
 
-	setGrid: function(newGrid) {
+	setGrid(newGrid) {
 		this.group.remove(this.tileGroup);
 		if (this.grid && newGrid !== this.grid) {
 			this.removeAllTiles();
@@ -113,9 +91,9 @@ vg.Board.prototype = {
 		this.tiles = [];
 		this.tileGroup = new THREE.Object3D();
 		this.group.add(this.tileGroup);
-	},
+	}
 
-	generateOverlay: function(size) {
+	generateOverlay(size) {
 		var mat = new THREE.LineBasicMaterial({
 			color: 0x000000,
 			opacity: 0.3
@@ -130,9 +108,9 @@ vg.Board.prototype = {
 		this.grid.generateOverlay(size, this.overlay, mat);
 
 		this.group.add(this.overlay);
-	},
+	}
 
-	generateTilemap: function(config) {
+	generateTilemap(config) {
 		this.reset();
 
 		var tiles = this.grid.generateTiles(config);
@@ -144,13 +122,13 @@ vg.Board.prototype = {
 		}
 
 		this.group.add(this.tileGroup);
-	},
+	}
 
-	reset: function() {
+	reset() {
 		// removes all tiles from the scene, but leaves the grid intact
 		this.removeAllTiles();
 		if (this.tileGroup) this.group.remove(this.tileGroup);
 	}
-};
+}
 
-vg.Board.prototype.constructor = vg.Board;
+export default Board;
