@@ -1,4 +1,25 @@
+import * as THREE from "three";
+import AStarFinder from './AStarFinder';
+import Loader from './Loader';
+import Tools from './Tools';
+
 class Board {
+	constructor(grid, finderConfig) {
+		if (!grid) throw new Error('You must pass in a grid system for the board to use.');
+
+		this.tiles = [];
+		this.tileGroup = null; // only for tiles
+
+		this.group = new THREE.Object3D(); // can hold all entities, also holds tileGroup, never trashed
+
+		this.grid = null;
+		this.overlay = null;
+		this.finder = new AStarFinder(finderConfig);
+		// need to keep a resource cache around, so this Loader does that, use it instead of THREE.ImageUtils
+		Loader.init();
+
+		this.setGrid(grid);
+	}
     setEntityOnTile(entity, tile) {
 		// snap an entity's position to a tile; merely copies position
 		var pos = this.grid.cellToPixel(tile.cell);
@@ -69,7 +90,7 @@ class Board {
 	}
 
 	getRandomTile() {
-		var i = vg.Tools.randomInt(0, this.tiles.length-1);
+		var i = Tools.randomInt(0, this.tiles.length-1);
 		return this.tiles[i];
 	}
 
