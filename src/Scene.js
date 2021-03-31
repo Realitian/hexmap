@@ -1,8 +1,10 @@
 import * as THREE from "three";
-// var OrbitControls = require('three-orbit-controls')(THREE);
+//var OrbitControls = require('./OrbitControls');
+import * as ORBIT from "./OrbitControls";
 import HexGrid from './HexGrid';
 import Board from './Board';
 import Tools from './Tools';
+//import OrbitControls from './OrbitControls';
 
 class Scene {
     constructor(sceneConfig, controlConfig) {
@@ -64,13 +66,13 @@ class Scene {
         }
     
         this.contolled = !!controlConfig;
-        // if (this.contolled) {
-        //     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-        //     this.controls.minDistance = controlSettings.minDistance;
-        //     this.controls.maxDistance = controlSettings.maxDistance;
-        //     this.controls.zoomSpeed = controlSettings.zoomSpeed;
-        //     this.controls.noZoom = controlSettings.noZoom;
-        // }
+        if (this.contolled) {
+            this.controls = new ORBIT.OrbitControls(this.camera, this.renderer.domElement);
+            this.controls.minDistance = controlSettings.minDistance;
+            this.controls.maxDistance = controlSettings.maxDistance;
+            this.controls.zoomSpeed = controlSettings.zoomSpeed;
+            this.controls.noZoom = controlSettings.noZoom;
+        }
     
         if (sceneSettings.cameraPosition) {
             this.camera.position.copy(sceneSettings.cameraPosition);

@@ -1,5 +1,5 @@
 import Tools from './Tools';
-import vg from './VG';
+import {vg, tundra, ice, sea, sand, grassland, hills, mountain} from './VG';
 import * as THREE from "three";
 
 class Tile {
@@ -24,33 +24,34 @@ class Tile {
 
         this.geometry = settings.geometry;
         this.material = settings.material;
+        var texture;
         if (!this.material) {
-            // switch (this.cell.tile.cell.userData.type) {
-            //     case "Tundra":
-            //         texture = tundra;
-            //         break;
-            //     case "Ice":
-            //         texture = ice;
-            //         break;
-            //     case "Sea":
-            //         texture = sea;
-            //         break;
-            //     case "Sand":
-            //         texture = sand;
-            //         break;
-            //     case "Grassland":
-            //         texture = grassland;
-            //         break;
-            //     case "Hills":
-            //         texture = hills;
-            //         break;
-            //     case "Mountain":
-            //         texture = mountain;
-            //         break;
-            // }
+             switch (this.cell.tile.cell.userData.type) {
+                 case "Tundra":
+                     texture = tundra;
+                     break;
+                 case "Ice":
+                     texture = ice;
+                     break;
+                 case "Sea":
+                     texture = sea;
+                     break;
+                 case "Sand":
+                     texture = sand;
+                     break;
+                 case "Grassland":
+                     texture = grassland;
+                     break;
+                 case "Hills":
+                     texture = hills;
+                     break;
+                 case "Mountain":
+                     texture = mountain;
+                     break;
+            }
 
-            this.material = new THREE.MeshPhongMaterial();//{map: texture });
-            //     texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+            this.material = new THREE.MeshPhongMaterial({map: texture });
+            texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
         }
 
         this.objectType = vg.TILE;

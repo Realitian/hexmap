@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import vg from './VG';
+import {vg} from './VG';
 import Cell from './Cell';
 import Tools from './Tools';
 import Tile from './Tile';

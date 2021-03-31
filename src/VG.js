@@ -27,4 +27,5 @@ var grassland = loader.load('./image/grassland.jpg');
 var hills = loader.load('./image/hills.jpg');
 var mountain = loader.load('./image/mountains.jpg');
 
-export default vg;
+export {vg, tundra, ice, sea, sand, grassland, hills, mountain};
+
