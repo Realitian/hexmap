@@ -116,7 +116,7 @@ class Scene {
 	}
 
 	render() {
-		// if (this.contolled) this.controls.update();
+		if (this.contolled) this.controls.update();
 		this.renderer.render(this.container, this.camera);
 	}
 

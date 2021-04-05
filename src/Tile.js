@@ -61,7 +61,7 @@ class Tile {
         this.selected = false;
         this.highlight = '0x0084cc';
 
-        this.mesh = new THREE.Mesh(this.geometry);//, this.material);
+        this.mesh = new THREE.Mesh(this.geometry, this.material);
         this.mesh.userData.structure = this;
 
         // create references so we can control orientation through this (Tile), instead of drilling down

@@ -150,6 +150,7 @@ class Board {
 		this.removeAllTiles();
 		if (this.tileGroup) this.group.remove(this.tileGroup);
 	}
+
 }
 
 export default Board;
