@@ -107,20 +107,20 @@ class App extends React.Component {
 
 					//	    				if(NORMALIZE_ELEVATIONS)
 					//	    					tiles[x][y].elevation = (tiles[x][y].elevation - min) * tiles[x][y].normalization_factor;
-					blockUtils.drawMapHex(col, row);
+					blockUtils.drawMap(col, row);
 					var index = col * mapsize + row;
 					if (tiles[index].blocks) {
 						for (var b = 0; b < tiles[index].blocks.length; b++) {
 							if (tiles[index].blocks[b][3] >= 0) // z below 0 doesn't get drawn
 							{
 								console.log("drawing block col=" + col + " row=" + row + " " + JSON.stringify(tiles[index].blocks[b]));
-								console.log("calling editBlock " + col + "," + row +
+								console.log("calling writeBlock " + col + "," + row +
 									" which=" + tiles[index].blocks[b][0] +
 									" x=" + tiles[index].blocks[b][1] +
 									" y=" + tiles[index].blocks[b][2] +
 									" z=" + tiles[index].blocks[b][3] +
 									" color=" + tiles[index].blocks[b][4]);
-								blockUtils.editBlock(col, row, b,
+								blockUtils.writeBlock(col, row, b,
 									[tiles[index].blocks[b][0] * 1, // which
 									tiles[index].blocks[b][1] * 1, // x
 									tiles[index].blocks[b][2] * 1,  // y
