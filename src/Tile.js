@@ -203,9 +203,9 @@ class Tile {
             this._emissive = null;
         }
 
-        // for (var b =0; b < this.cell.tile.cell.userData.blocks.length; b++){
-        //     this.writeBlock(b, this.cell.tile.cell.userData.blocks[b]);
-        // }
+        for (var b =0; b < this.cell.tile.cell.userData.blocks.length; b++){
+            this.writeBlock(b, this.cell.tile.cell.userData.blocks[b]);
+        }
     }
 
     select() {
@@ -334,10 +334,10 @@ class Tile {
 			xpoint = xpoint + this.tilewidth / 2;
 		var ypoint = (row - (this.mapsize - 1) / 2) * this.tilevert;
 	
-		xpoint = xpoint + x * this.blockwidth;
+		xpoint = /*xpoint +*/ x * this.blockwidth;
 		if (y % 2 !== 0)
 			xpoint = xpoint + this.blockwidth / 2;
-		ypoint = ypoint + y * this.blockvert;
+		ypoint = /*ypoint + */ y * this.blockvert;
 	
 		var extrudeSettings = {
 			amount: this.blockextrude,
@@ -378,6 +378,8 @@ class Tile {
 		var hexGeom = new THREE.ExtrudeGeometry(hexShape, extrudeSettings);
 	
 		var mesh = new THREE.Mesh(hexGeom, material);
+        mesh.rotation.x = -90 * vg.DEG_TO_RAD;
+
 		var tileextrusion = 0;
 		// var index = col * this.mapsize + row;
 		// if (this.tiles[index].elevation < this.SEA_LEVEL) {
@@ -390,7 +392,7 @@ class Tile {
 		// if (this.tiles.length === 1) // special case of the single island hex on the blockref (otherwise, it woudl be ice)
 			// mesh.position.set(0, 0, 1 + z * this.blockextrude);
 		// else
-			mesh.position.set(0, 0, 0);//tileextrusion + z * this.blockextrude);
+			mesh.position.set(0, 20, 0);//tileextrusion + z * this.blockextrude);
 	
 		mesh.userData.which = which;
 		mesh.userData.x = x;
