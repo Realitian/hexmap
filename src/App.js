@@ -35,15 +35,15 @@ class App extends React.Component {
 
 	    var grid = new HexGrid();
 		// var mouse = new vg.MouseCaster(scene.container, scene.camera);
-		//var board = new Board(grid);
+		var board = new Board(grid);
 		var mouse = new MOUSE.MouseCaster(scene.container, scene.camera);
-		//grid.load('./hex-map.json', function() {
-		//	board.generateTilemap();
-		//}, this);
+		grid.load('./hex-map.json', function() {
+			board.generateTilemap();
+		}, this);
 
-		//scene.add(board.group);
-		//scene.focusOn(board.group);
-		//console.log(board.group);
+		scene.add(board.group);
+		scene.focusOn(board.group);
+		console.log(board.group);
 
 		mouse.signal.add(function(evt, tile) {
 			if (evt === MOUSE.MouseCaster.CLICK) {
@@ -53,18 +53,18 @@ class App extends React.Component {
 			}
 		}, this);
 
-		this.explore();
-		update();
+		// this.explore();
+		// update();
 
-		function update() {
-			mouse.update();
-			scene.render();
-			requestAnimationFrame(update);
-		}
+		// function update() {
+		// 	mouse.update();
+		// 	scene.render();
+		// 	requestAnimationFrame(update);
+		// }
     var idle = function () {
       requestAnimationFrame(idle);
       scene.animate();
-			// mouse.update();
+	  mouse.update();
     };
 
     idle();
