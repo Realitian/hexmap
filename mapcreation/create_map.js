@@ -17,7 +17,7 @@ async function main() {
     }
     await console.log('Connected to the Etheria database.');
 });
-    for (index = 0; index <= 523; index++) {
+    for (index = 0; index <= 1088; index++) {
         let [col, row] = [Math.floor(index / 33),index % 33];
         await evenr_to_cube(col,row);
     }
