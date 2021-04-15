@@ -139,7 +139,7 @@ class Board {
 
 		this.tileGroup = new THREE.Object3D();
 		for (var i = 0; i < tiles.length; i++) {
-			this.tileGroup.add(tiles[i].mesh);
+			this.tileGroup.add(tiles[i].object);
 		}
 
 		this.group.add(this.tileGroup);
