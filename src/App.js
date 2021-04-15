@@ -51,6 +51,11 @@ class App extends React.Component {
 				console.log(tile.cell, tile.position);
 				console.log(tile.cell.userData);
 			}
+			else if (evt === MOUSE.MouseCaster.UP && tile) {
+				tile.deselect();
+				console.log(tile.cell, tile.position);
+				console.log(tile.cell.userData);
+			}
 		}, this);
 
 		// this.explore();

@@ -79,8 +79,9 @@ MouseCaster.prototype = {
 				/*else {
 					// hit a new object when nothing was there previously
 				}*/
+				this.selectedObject = this.pickedObject;
 				this.pickedObject = obj;
-				this.selectedObject = null; // cancel click, otherwise it'll confuse the user
+				// this.selectedObject = null; // cancel click, otherwise it'll confuse the user
 
 				this.signal.dispatch(MouseCaster.OVER, this.pickedObject);
 			}
@@ -114,9 +115,9 @@ MouseCaster.prototype = {
 			this._preventDefault = false;
 			return false;
 		}
-		if (this.pickedObject) {
-			this.selectedObject = this.pickedObject;
-		}
+		// if (this.pickedObject) {
+		// 	this.selectedObject = this.pickedObject;
+		// }
 		this.shift = evt.shiftKey;
 		this.ctrl = evt.ctrlKey;
 
@@ -138,10 +139,10 @@ MouseCaster.prototype = {
 		this.shift = evt.shiftKey;
 		this.ctrl = evt.ctrlKey;
 
-		this.signal.dispatch(MouseCaster.UP, this.pickedObject);
-		if (this.selectedObject && this.pickedObject && this.selectedObject.uniqueID === this.pickedObject.uniqueID) {
+		this.signal.dispatch(MouseCaster.UP, this.selectedObject);
+		// if (this.selectedObject && this.pickedObject && this.selectedObject.uniqueID === this.pickedObject.uniqueID) {
 			this.signal.dispatch(MouseCaster.CLICK, this.pickedObject);
-		}
+		// }
 
 		this.down = evt.which === 1 ? false : this.down;
 		this.rightDown = evt.which === 3 ? false : this.rightDown;
