@@ -378,10 +378,10 @@ class Tile {
 		var hexGeom = new THREE.ExtrudeGeometry(hexShape, extrudeSettings);
 	
 		var mesh = new THREE.Mesh(hexGeom, material);
-		var tileextrusion;
+		var tileextrusion = 0;
 		// var index = col * this.mapsize + row;
 		// if (this.tiles[index].elevation < this.SEA_LEVEL) {
-			tileextrusion = this.SEA_LEVEL * this.EXTRUSION_FACTOR;
+			// tileextrusion = this.SEA_LEVEL * this.EXTRUSION_FACTOR;
 		// }
 		// else {
 		// 	tileextrusion = this.tiles[index].elevation * this.EXTRUSION_FACTOR;
@@ -390,7 +390,7 @@ class Tile {
 		// if (this.tiles.length === 1) // special case of the single island hex on the blockref (otherwise, it woudl be ice)
 			// mesh.position.set(0, 0, 1 + z * this.blockextrude);
 		// else
-			mesh.position.set(0, 0, tileextrusion + z * this.blockextrude);
+			mesh.position.set(0, 0, 0);//tileextrusion + z * this.blockextrude);
 	
 		mesh.userData.which = which;
 		mesh.userData.x = x;

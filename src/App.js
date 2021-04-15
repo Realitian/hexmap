@@ -46,15 +46,17 @@ class App extends React.Component {
 		console.log(board.group);
 
 		mouse.signal.add(function(evt, tile) {
-			if (evt === MOUSE.MouseCaster.CLICK) {
-				tile.toggle();
-				console.log(tile.cell, tile.position);
-				console.log(tile.cell.userData);
-			}
-			else if (evt === MOUSE.MouseCaster.UP && tile) {
-				tile.deselect();
-				console.log(tile.cell, tile.position);
-				console.log(tile.cell.userData);
+			if (tile != null){
+				if (evt === MOUSE.MouseCaster.CLICK) {
+					tile.toggle();
+					console.log(tile.cell, tile.position);
+					console.log(tile.cell.userData);
+				}
+				else if (evt === MOUSE.MouseCaster.UP && tile) {
+					tile.deselect();
+					console.log(tile.cell, tile.position);
+					console.log(tile.cell.userData);
+				}	
 			}
 		}, this);
 
