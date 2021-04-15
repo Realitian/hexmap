@@ -17,11 +17,17 @@ async function main() {
     }
     await console.log('Connected to the Etheria database.');
 });
-    for (index = 0; index <= 1088; index++) {
+    for (index = 0; index <= 523; index++) {
         let [col, row] = [Math.floor(index / 33),index % 33];
         await evenr_to_cube(col,row);
     }
-    let stringifycells = JSON.stringify(cells);
+    //let stringifycells = JSON.stringify(cells);
+	let stringifycells = JSON.stringify(cells, (key, value) => {
+	  if (value instanceof Array) {
+		return [...value.values()];
+	  }
+	  return value;
+	});
     stringToWrite = {
         "size": 5,
         "cellSize": 10,
@@ -55,7 +61,10 @@ async function evenr_to_cube(col,row){
     var z = row-10;
     var y = -x-z+10;
     let elevation = await getElevation(1.1,col,row);
-    var colrow = {"col": col, "row": row, "type": getTypeOfTile(elevation,row) };
+    let blocks = await getBlocks(1.1,col,row);
+	let blockobj = JSON.parse(blocks);
+	console.log(blockobj);
+    var colrow = {"col": col, "row": row, "type": getTypeOfTile(elevation,row), "blocks": blockobj };
     cells.push({
         "q":x,
         "r":y,
@@ -65,26 +74,47 @@ async function evenr_to_cube(col,row){
         "userData": colrow
     });
   }
- async function getElevation(version,col,row) {
-    let elev;
-     const res = await new Promise((resolve, reject) => {
-         db.all(`SELECT elevation
-                       FROM tile
-                       WHERE version = ?
-                         AND col_tile = ?
-                         AND row_tile = ?`, [version, col, row], async (err, rows) => {
-             if (err) {
-                 throw err;
-             }
-             rows.forEach((row) => {
-                 resolve(row.elevation);
-             });
-         });
-     });
+  
+async function getElevation(version,col,row) {
+let elev;
+ const res = await new Promise((resolve, reject) => {
+	 db.all(`SELECT elevation
+				   FROM tile
+				   WHERE version = ?
+					 AND col_tile = ?
+					 AND row_tile = ?`, [version, col, row], async (err, rows) => {
+		 if (err) {
+			 throw err;
+		 }
+		 rows.forEach((row) => {
+			 resolve(row.elevation);
+		 });
+	 });
+ });
 
-     console.log(res);
-     return res;
-  }
+ //console.log(res);
+ return res;
+}
+  
+async function getBlocks(version,col,row) {
+ const res = await new Promise((resolve, reject) => {
+	 db.all(`SELECT blocks
+				   FROM tile
+				   WHERE version = ?
+					 AND col_tile = ?
+					 AND row_tile = ?`, [version, col, row], async (err, rows) => {
+		 if (err) {
+			 throw err;
+		 }
+		 rows.forEach((row) => {
+			 resolve(row.blocks);
+		 });
+	 });
+ });
+
+ //console.log(res);
+ return res;
+}
 
 function getTypeOfTile(elevation,row) {
     let type;
