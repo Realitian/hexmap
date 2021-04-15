@@ -203,9 +203,9 @@ class Tile {
             this._emissive = null;
         }
 
-        for (var b =0; b < this.cell.tile.cell.userData.blocks.length; b++){
-            this.writeBlock(b, this.cell.tile.cell.userData.blocks[b]);
-        }
+        // for (var b =0; b < this.cell.tile.cell.userData.blocks.length; b++){
+        //     this.writeBlock(b, this.cell.tile.cell.userData.blocks[b]);
+        // }
     }
 
     select() {

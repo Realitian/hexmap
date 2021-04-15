@@ -68,9 +68,11 @@ MouseCaster.prototype = {
 
 		if (intersects.length > 0) {
 			// get the first object under the mouse
+
 			hit = intersects[0];
 			obj = hit.object.userData.structure;
 			if (this.pickedObject != obj) {
+
 				// the first object changed, meaning there's a different one, or none at all
 				if (this.pickedObject) {
 					// it's a new object, notify the old object is going away
@@ -79,7 +81,6 @@ MouseCaster.prototype = {
 				/*else {
 					// hit a new object when nothing was there previously
 				}*/
-				this.selectedObject = this.pickedObject;
 				this.pickedObject = obj;
 				// this.selectedObject = null; // cancel click, otherwise it'll confuse the user
 
@@ -95,7 +96,6 @@ MouseCaster.prototype = {
 				this.signal.dispatch(MouseCaster.OUT, this.pickedObject);
 			}
 			this.pickedObject = null;
-			this.selectedObject = null;
 		}
 
 		this.allHits = intersects;
@@ -143,6 +143,7 @@ MouseCaster.prototype = {
 		// if (this.selectedObject && this.pickedObject && this.selectedObject.uniqueID === this.pickedObject.uniqueID) {
 			this.signal.dispatch(MouseCaster.CLICK, this.pickedObject);
 		// }
+		this.selectedObject = this.pickedObject;
 
 		this.down = evt.which === 1 ? false : this.down;
 		this.rightDown = evt.which === 3 ? false : this.rightDown;
