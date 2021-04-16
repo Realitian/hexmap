@@ -185,6 +185,7 @@ class Tile {
         this.object = new THREE.Object3D();
         var mesh = new THREE.Mesh(this.geometry, this.material);
         this.object.add(mesh);
+        this.root = mesh;
 
         mesh.userData.structure = this;
 
@@ -203,8 +204,17 @@ class Tile {
             this._emissive = null;
         }
 
+        // this.writeBlock([0, 0, 66, 0, 82]);
+        // this.writeBlock([0, 0, 0, 0, 12]);
+        // this.writeBlock([0, 0, -66, 0, 32]);
+        
+        // this.writeBlock([0, -50, 33, 0, 1]);
+        // this.writeBlock([0, -50, -33, 0, 2]);
+        // this.writeBlock([0, 49, -33, 0, 3]);
+        // this.writeBlock([0, 49, 33, 0, 4]);
+
         for (var b =0; b < this.cell.tile.cell.userData.blocks.length; b++){
-            this.writeBlock(b, this.cell.tile.cell.userData.blocks[b]);
+            this.writeBlock(this.cell.tile.cell.userData.blocks[b]);
         }
     }
 
@@ -250,11 +260,10 @@ class Tile {
 	}
 
 
-    writeBlock(blockindex, _block) {
+    writeBlock(_block) {
         const col = this.cell.tile.cell.userData.col;
         const row = this.cell.tile.cell.userData.row;
 
-		//console.log('entering writeBlock blockindex=' + blockindex + " " + JSON.stringify(_block));
 		var canOccupy = new Array(24);
 		var didOccupy = new Array(24);
 		for (var b = 0; b < 24; b++) // gotta create a new object and move all the values over. Otherwise, we'd be writing into blockdefs.
@@ -262,10 +271,6 @@ class Tile {
 			canOccupy[b] = this.blockdefs[_block[0]].occupies[b];
 			didOccupy[b] = this.blockdefs[_block[0]].occupies[b];
 		}
-		// var index = col * this.mapsize + row;
-		// var tile = this.cell.tile;
-
-        // this.cell.tile.cell.userData.blocks
 
 		b = 0;
 		for (b = 0; b < 24; b += 3) // always 8 hexes, calculate the didoccupy
@@ -291,9 +296,9 @@ class Tile {
 			}
 			var highlightkeyhex;
 			if (h === 0 && (typeof highlightkeyhex !== "undefined" && highlightkeyhex !== null && highlightkeyhex === true))
-				this.drawBlock(col, row, _block[0], canOccupy[h], canOccupy[h + 1], canOccupy[h + 2], 87, blockindex, h / 3, keyx, keyy, keyz);
+				this.drawBlock(col, row, _block[0], canOccupy[h], canOccupy[h + 1], canOccupy[h + 2], 87, h / 3, keyx, keyy, keyz);
 			else
-				this.drawBlock(col, row, _block[0], canOccupy[h], canOccupy[h + 1], canOccupy[h + 2], _block[4], blockindex, h / 3, keyx, keyy, keyz);
+				this.drawBlock(col, row, _block[0], canOccupy[h], canOccupy[h + 1], canOccupy[h + 2], _block[4], h / 3, keyx, keyy, keyz);
 		}
 	
 		if (_block[3] >= 0) // If the previous z was greater than 0 (i.e. not hidden) ...
@@ -324,10 +329,9 @@ class Tile {
 				this.occupado.push(newtriplet);
 			}
 		}
-		// tile.blocks[blockindex] = _block;
 	}
 
-    drawBlock(col, row, which, x, y, z, color, blockindex, sequencenum, keyx, keyy, keyz) {
+    drawBlock(col, row, which, x, y, z, color, sequencenum, keyx, keyy, keyz) {
 		console.log("drawBlock " + col + "," + row + " which=" + which + " x=" + x + " y=" + y + " z=" + z + " color=" + color);
 		var xpoint = (col - (this.mapsize - 1) / 2) * this.tilewidth;
 		if (row % 2 !== 0)
@@ -378,7 +382,6 @@ class Tile {
 		var hexGeom = new THREE.ExtrudeGeometry(hexShape, extrudeSettings);
 	
 		var mesh = new THREE.Mesh(hexGeom, material);
-        mesh.rotation.x = -90 * vg.DEG_TO_RAD;
 
 		var tileextrusion = 0;
 		// var index = col * this.mapsize + row;
@@ -392,39 +395,43 @@ class Tile {
 		// if (this.tiles.length === 1) // special case of the single island hex on the blockref (otherwise, it woudl be ice)
 			// mesh.position.set(0, 0, 1 + z * this.blockextrude);
 		// else
-			mesh.position.set(0, 20, 0);//tileextrusion + z * this.blockextrude);
+
+        const ground = this.cell.tile.cell.h+this.blocksize/2;
+        mesh.position.set(0, 0, z * this.blockextrude + ground);//tileextrusion + );
 	
-		mesh.userData.which = which;
-		mesh.userData.x = x;
-		mesh.userData.y = y;
-		mesh.userData.z = z;
-		mesh.userData.keyx = keyx;
-		mesh.userData.keyy = keyy;
-		mesh.userData.keyz = keyz;
-		mesh.userData.blockindex = blockindex;
-		mesh.userData.sequencenum = sequencenum;
-		mesh.userData.description = this.blockdefs[which].description;
-		mesh.userData.color = color;
-		var outer = [];
-		var inner = [];
-		for (var cy = 0; cy < 24; cy += 3) {
-			inner = [];
-			inner.push(this.blockdefs[which].occupies[cy]);
-			inner.push(this.blockdefs[which].occupies[cy + 1]);
-			inner.push(this.blockdefs[which].occupies[cy + 2]);
-			outer.push(inner);
-		}
-		mesh.userData.occupies = outer;
+		// mesh.userData.which = which;
+		// mesh.userData.x = x;
+		// mesh.userData.y = y;
+		// mesh.userData.z = z;
+		// mesh.userData.keyx = keyx;
+		// mesh.userData.keyy = keyy;
+		// mesh.userData.keyz = keyz;
+		// mesh.userData.sequencenum = sequencenum;
+		// mesh.userData.description = this.blockdefs[which].description;
+		// mesh.userData.color = color;
+		// var outer = [];
+		// var inner = [];
+		// for (var cy = 0; cy < 24; cy += 3) {
+		// 	inner = [];
+		// 	inner.push(this.blockdefs[which].occupies[cy]);
+		// 	inner.push(this.blockdefs[which].occupies[cy + 1]);
+		// 	inner.push(this.blockdefs[which].occupies[cy + 2]);
+		// 	outer.push(inner);
+		// }
+		// mesh.userData.occupies = outer;
 	
 		// this.scene.add(mesh);
-        this.object.add(mesh);
+        this.root.add(mesh);
 	}
 
     cornerHex(center, size, i) {
-		var angle_deg = 60 * i + 30;
+		var angle_deg = 60 * i;
 		var angle_rad = Math.PI / 180 * angle_deg;
-		return new Point(center.x + size * Math.cos(angle_rad),
+		var pt = new Point(center.x + size * Math.cos(angle_rad),
 			center.y + size * Math.sin(angle_rad));
+        // pt.rotate(pt, -30);
+
+        return pt;
 	}
 }
 

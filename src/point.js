@@ -40,6 +40,14 @@ Point.prototype.orbit = function(origin, arcWidth, arcHeight, degrees){
 	this.x = origin.x + arcWidth * Math.cos(radians);
 	this.y = origin.y + arcHeight * Math.sin(radians);
 };
+Point.prototype.rotate = function(origin, degrees){
+	var radians = degrees * (Math.PI / 180.0);
+	var s = Math.sin(radians);
+	var c = Math.cos(radians);
+
+	this.x = origin.x * c - origin.y * s; 
+	this.y = origin.x * s + origin.y * c; 
+};
 Point.prototype.offset = function(dx, dy){
 	this.x += dx;
 	this.y += dy;

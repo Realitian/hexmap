@@ -64,7 +64,7 @@ class HexGrid {
 	}
     
     createVertex(i) {
-		var angle = (vg.TAU / 6) * i;
+		var angle = (vg.TAU / 6) * i + vg.PI/6;
 		return new THREE.Vector3((this.cellSize * Math.cos(angle)), (this.cellSize * Math.sin(angle)), 0);
 	}
 
@@ -237,6 +237,7 @@ class HexGrid {
 			t = this.generateTile(c, settings.tileScale, settings.material);
 			t.position.copy(this.cellToPixel(c));
 			t.position.y = 0;
+			t.rotation.z = 30 * vg.DEG_TO_RAD;
 			tiles.push(t);
 		}
 		return tiles;
