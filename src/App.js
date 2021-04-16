@@ -1,15 +1,15 @@
 import './App.css';
-import React from "react";
+import React from 'react';
 import Scene from './Scene';
 import HexGrid from './HexGrid';
-import * as MOUSE from "./MouseCaster";
+import * as MOUSE from './MouseCaster';
 import Board from './Board';
 
 class App extends React.Component {
   componentDidMount() {
 	var scene = new Scene({
 		element: this.mount,
-		cameraPosition: {x:207.5, y:250, z:360}
+		cameraPosition: {x: 207.5, y: 250, z: 360}
 	}, true);
 
 	var grid = new HexGrid();

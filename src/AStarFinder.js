@@ -77,7 +77,7 @@ class AStarFinder {
 		return null;
 	}
 
-	compare (nodeA, nodeB) {
+	compare(nodeA, nodeB) {
 		return nodeA._priority - nodeB._priority;
 	}
 
