@@ -170,7 +170,6 @@ class Tools {
 		var xhr = new XMLHttpRequest();
 		var cache = typeof config.cache === 'undefined' ? false : config.cache;
 		var uri = cache ? config.url : config.url + '?t=' + Math.floor(Math.random() * 10000) + Date.now();
-		console.log(uri);
 		xhr.onreadystatechange = function() {
 			if (this.status === 200) {
 				var json = null;
@@ -179,7 +178,6 @@ class Tools {
 				}
 				catch (err) {
 					//console.warn('[Tools.getJSON] Error: '+config.url+' is not a json resource');
-					console.log("Error", err);
 					return;
 				}
 				config.callback.call(config.scope || null, json);

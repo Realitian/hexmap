@@ -4,10 +4,7 @@ import * as THREE from "three";
 import {Point} from "./point";
 
 class Tile {
-    mapsize = 33;
-
     size = 10; // length of one tile segment
-    EXTRUSION_FACTOR = this.size / 75;
 
     tileheight = this.size * 2;
     tilevert = this.tileheight * 3 / 4;
@@ -17,7 +14,6 @@ class Tile {
     blockvert = this.blockheight * 3 / 4;
     blockwidth = Math.sqrt(3) / 2 * this.blockheight;
     blockextrude = this.blocksize;
-    SEA_LEVEL = 125;
 
     colors = ["000000","000033","000066","000099","0000CC","0000FF","003300","003333","003366","003399","0033CC","0033FF","006600","006633","006666","006699","0066CC","0066FF","009900","009933","009966","009999",
         "0099CC","0099FF","00CC00","00CC33","00CC66","00CC99","00CCCC","00CCFF","00FF00","00FF33","00FF66","00FF99","00FFCC","00FFFF","330000","330033","330066","330099","3300CC","3300FF","333300","333333",
@@ -122,8 +118,6 @@ class Tile {
         'attachesto': [0, 0, -1, 0, 1, -1, 0, 2, 0, 0, 3, 1, 0, 4, 2, 0, 0, 1, 0, 1, 2, 0, 2, 3, 0, 3, 4, 0, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         }];
 
-    occupado = [];
-
     constructor(config) {
         config = config || {};
         var settings = {
@@ -204,15 +198,6 @@ class Tile {
             this._emissive = null;
         }
 
-        // this.writeBlock([0, 0, 66, 0, 82]);
-        // this.writeBlock([0, 0, 0, 0, 12]);
-        // this.writeBlock([0, 0, -66, 0, 32]);
-        
-        // this.writeBlock([0, -50, 33, 0, 1]);
-        // this.writeBlock([0, -50, -33, 0, 2]);
-        // this.writeBlock([0, 49, -33, 0, 3]);
-        // this.writeBlock([0, 49, 33, 0, 4]);
-
         for (var b =0; b < this.cell.tile.cell.userData.blocks.length; b++){
             this.writeBlock(this.cell.tile.cell.userData.blocks[b]);
         }
@@ -261,15 +246,10 @@ class Tile {
 
 
     writeBlock(_block) {
-        const col = this.cell.tile.cell.userData.col;
-        const row = this.cell.tile.cell.userData.row;
-
 		var canOccupy = new Array(24);
-		var didOccupy = new Array(24);
 		for (var b = 0; b < 24; b++) // gotta create a new object and move all the values over. Otherwise, we'd be writing into blockdefs.
 		{
 			canOccupy[b] = this.blockdefs[_block[0]].occupies[b];
-			didOccupy[b] = this.blockdefs[_block[0]].occupies[b];
 		}
 
 		b = 0;
@@ -280,68 +260,23 @@ class Tile {
 			if (canOccupy[1] % 2 != 0 && canOccupy[b + 1] % 2 == 0) // if anchor y is odd and this hex y is even, (SW NE beam goes 11,`2`2,23,`3`4,35,`4`6,47,`5`8  ` = x value incremented by 1. Same applies to SW NE beam from 01,12,13,24,25,36,37,48)
 				canOccupy[b] = canOccupy[b] + 1;  			     // then offset x by +1
 			canOccupy[b + 2] = canOccupy[b + 2] + _block[3];
-			didOccupy[b] = didOccupy[b] + _block[1];
-			didOccupy[b + 1] = didOccupy[b + 1] + _block[2];
-			if (didOccupy[1] % 2 != 0 && didOccupy[b + 1] % 2 == 0) // if anchor y and this hex y are both odd,
-				didOccupy[b] = didOccupy[b] + 1; 					 // then offset x by +1
-			didOccupy[b + 2] = didOccupy[b + 2] + _block[3];
+			
 		}
-		var keyx = 0,keyy = 0,keyz = 0;
+		
 		for (var h = 0; h < 24; h += 3) // always 8 hexes, calculate the didoccupy
 		{
-			if (h === 0) {
-				keyx = canOccupy[h];
-				keyy = canOccupy[h + 1];
-				keyz = canOccupy[h + 2];
-			}
-			var highlightkeyhex;
-			if (h === 0 && (typeof highlightkeyhex !== "undefined" && highlightkeyhex !== null && highlightkeyhex === true))
-				this.drawBlock(col, row, _block[0], canOccupy[h], canOccupy[h + 1], canOccupy[h + 2], 87, h / 3, keyx, keyy, keyz);
+			if (h === 0)
+				this.drawBlock(canOccupy[h], canOccupy[h + 1], canOccupy[h + 2], 87);
 			else
-				this.drawBlock(col, row, _block[0], canOccupy[h], canOccupy[h + 1], canOccupy[h + 2], _block[4], h / 3, keyx, keyy, keyz);
-		}
-	
-		if (_block[3] >= 0) // If the previous z was greater than 0 (i.e. not hidden) ...
-		{
-			for (var l = 0; l < 24; l += 3) // loop 8 times,find the previous occupado entries and overwrite them
-			{
-				if (this.occupado) {
-					for (var o = 0; o < this.occupado.length; o++) {
-						if (didOccupy[l] == this.occupado[o][0] && didOccupy[l + 1] == this.occupado[o][1] && didOccupy[l + 2] == this.occupado[o][2]) // x,y,z equal?
-						{
-							this.occupado[o][0] = canOccupy[l]; // found it. Overwrite it
-							this.occupado[o][1] = canOccupy[l + 1];
-							this.occupado[o][2] = canOccupy[l + 2];
-						}
-					}
-				}
-			}
-		}
-		else // previous block was hidden
-		{
-			var newtriplet = [];
-			for (var ll = 0; ll < 24; ll += 3) // add the 8 new hexes to occupado
-			{
-				newtriplet = new Array(3);
-				newtriplet[0] = canOccupy[ll];
-				newtriplet[1] = canOccupy[ll + 1];
-				newtriplet[2] = canOccupy[ll + 2];
-				this.occupado.push(newtriplet);
-			}
+				this.drawBlock(canOccupy[h], canOccupy[h + 1], canOccupy[h + 2], _block[4]);
 		}
 	}
 
-    drawBlock(col, row, which, x, y, z, color, sequencenum, keyx, keyy, keyz) {
-		console.log("drawBlock " + col + "," + row + " which=" + which + " x=" + x + " y=" + y + " z=" + z + " color=" + color);
-		var xpoint = (col - (this.mapsize - 1) / 2) * this.tilewidth;
-		if (row % 2 !== 0)
-			xpoint = xpoint + this.tilewidth / 2;
-		var ypoint = (row - (this.mapsize - 1) / 2) * this.tilevert;
-	
-		xpoint = /*xpoint +*/ x * this.blockwidth;
+    drawBlock(x, y, z, color) {
+		var xpoint = x * this.blockwidth;
 		if (y % 2 !== 0)
 			xpoint = xpoint + this.blockwidth / 2;
-		ypoint = /*ypoint + */ y * this.blockvert;
+		var ypoint = y * this.blockvert;
 	
 		var extrudeSettings = {
 			amount: this.blockextrude,
@@ -351,12 +286,6 @@ class Tile {
 			bevelEnabled: false,
 		};
 	
-		// var hextex;
-		// var useblocknumbertextures;
-		// if (typeof useblocknumbertextures !== "undefined" && useblocknumbertextures !== null)
-		// 	hextex = this.hextexes[which];
-		// else
-		// 	hextex = this.hextexprime;
 		var colorint = parseInt("0x" + this.colors[color + 128]);
 		var material = new THREE.MeshPhongMaterial({ color: colorint/*, map: hextex*/ });
 		// hextex.wrapS = hextex.wrapT = THREE.RepeatWrapping;
@@ -383,44 +312,9 @@ class Tile {
 	
 		var mesh = new THREE.Mesh(hexGeom, material);
 
-		var tileextrusion = 0;
-		// var index = col * this.mapsize + row;
-		// if (this.tiles[index].elevation < this.SEA_LEVEL) {
-			// tileextrusion = this.SEA_LEVEL * this.EXTRUSION_FACTOR;
-		// }
-		// else {
-		// 	tileextrusion = this.tiles[index].elevation * this.EXTRUSION_FACTOR;
-		// }
-		//console.log("LOWER " + coordx + "," + coordy + " extrudeamount=" + tileextrusion  + " tiles[coordx][coordy].elevation=" + tiles[coordx][coordy].elevation + " EXTRUSION_FACTOR=" + EXTRUSION_FACTOR);
-		// if (this.tiles.length === 1) // special case of the single island hex on the blockref (otherwise, it woudl be ice)
-			// mesh.position.set(0, 0, 1 + z * this.blockextrude);
-		// else
-
-        const ground = this.cell.tile.cell.h+this.blocksize/2;
-        mesh.position.set(0, 0, z * this.blockextrude + ground);//tileextrusion + );
-	
-		// mesh.userData.which = which;
-		// mesh.userData.x = x;
-		// mesh.userData.y = y;
-		// mesh.userData.z = z;
-		// mesh.userData.keyx = keyx;
-		// mesh.userData.keyy = keyy;
-		// mesh.userData.keyz = keyz;
-		// mesh.userData.sequencenum = sequencenum;
-		// mesh.userData.description = this.blockdefs[which].description;
-		// mesh.userData.color = color;
-		// var outer = [];
-		// var inner = [];
-		// for (var cy = 0; cy < 24; cy += 3) {
-		// 	inner = [];
-		// 	inner.push(this.blockdefs[which].occupies[cy]);
-		// 	inner.push(this.blockdefs[which].occupies[cy + 1]);
-		// 	inner.push(this.blockdefs[which].occupies[cy + 2]);
-		// 	outer.push(inner);
-		// }
-		// mesh.userData.occupies = outer;
-	
-		// this.scene.add(mesh);
+		const ground = this.cell.tile.cell.h+this.blocksize/2;
+        mesh.position.set(0, 0, z * this.blockextrude + ground);
+        
         this.root.add(mesh);
 	}
 
@@ -429,8 +323,6 @@ class Tile {
 		var angle_rad = Math.PI / 180 * angle_deg;
 		var pt = new Point(center.x + size * Math.cos(angle_rad),
 			center.y + size * Math.sin(angle_rad));
-        // pt.rotate(pt, -30);
-
         return pt;
 	}
 }
